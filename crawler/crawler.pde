@@ -13,13 +13,14 @@ Serial port;
 //constants
 int WIDTH = 500;
 int HEIGHT = 500;
+color gameBlue = color(66, 135, 245);
 
 //menu variables
-boolean optionMenu = true;
+boolean optionMenu = false;
 int menuSelection;
 int optionSelection;
-color unselectedColor = color(255); //white
-color selectedColor = color(180); //light grey
+color unselectedColor = color(180); //white
+color selectedColor = color(255); //light grey
 color startGameColor = unselectedColor;
 color optionsColor = unselectedColor;
 //player color options
@@ -32,15 +33,15 @@ color color3 = color(204, 18, 34);
 //player variables
 float playerSize = 20;
 Player player = new Player(playerSize, color0);
-int xPos;
-int yPos;
-float stepX = 1;
-float stepY = 1;
+float xPos = 250;
+float yPos = 400;
+float newXstep = 0;
+float newYstep = 0;
 FloatList lastStepX = new FloatList();
 FloatList lastStepY = new FloatList();
 float smoothedX = 0;
 float smoothedY = 0;
-int ammo = 1;
+int ammo = 3;
 boolean isPlayerDead = true;
 int lastGameScore = -1;
 
@@ -88,7 +89,6 @@ void setup(){
 }
 
 void draw(){
-    println(coins.size());
     if (isPlayerDead) { //go to main menu
         if (optionMenu){ //in option menu
             background(30);
@@ -156,11 +156,18 @@ void draw(){
             //start game
             fill(startGameColor);
             rect(100,100,300,100,10);
+            if (menuSelection == 0){
+                stroke(gameBlue);
+                line(130,180, 370,180);
+            }
             //options
             fill(optionsColor);
             rect(100,250,300,100,10);
-
-            fill(66, 135, 245);
+            if (menuSelection == 1){
+                stroke(gameBlue);
+                line(130,330, 370,330);
+            }
+            fill(gameBlue);
             text("Start Game", 150, 165);
             text("Options", 175, 315);
             
@@ -185,10 +192,12 @@ void draw(){
         letTheBeamsTravel();
         
         //draw player
-        player.move(xPos, yPos);
+        player.move(newXstep, newYstep);
 
         //draw player points and current ammo
-        fill(255,255,255);
+        fill(220);
+        rect(0,0, 70, 50);
+        fill(0);
         textSize(12);
         text("Points: "+player.points, 5,15);
         text("Ammo: "+ammo, 5,30);
@@ -208,7 +217,7 @@ void draw(){
 
 void killPlayer(){
     isPlayerDead = true;
-
+    
     //reset everything in the game
 
     //reset difficulty
@@ -228,8 +237,8 @@ void killPlayer(){
     //reset ammo
     ammo = 1;
     //reset player pos
-    player.myX = width / 2;
-    player.myY = height;    
+    player.myX = 250;
+    player.myY = 400;    
     //reset points
     lastGameScore = player.points;
     player.points = 0;
@@ -364,7 +373,9 @@ void createCoins(){
 
 
 
-
+void makeSound(){
+   port.write(" ");
+}
 
 void checkCollisions(){
     //check for collisions between player and enemy
@@ -375,6 +386,7 @@ void checkCollisions(){
             enemy.setX(random(width - 20));
             //damage the player and check if they're dead
             player.damage();
+            makeSound();
             if (player.lives <= 0){
                 killPlayer();
             }
@@ -483,8 +495,8 @@ void fireALazerBeam(){
         for(Ammo beam : beams){
             if (ammo > 0){
                 if (!beam.isActive){
-                    beam.setX(xPos + (player.getSize() / 2));
-                    beam.setY(yPos);
+                    beam.setX(player.getX() + (player.getSize() / 2));
+                    beam.setY(player.getY());
                     beam.makeActive();
                     ammo -= 1; //update visual
                     break;
@@ -504,13 +516,13 @@ void serialEvent(Serial port) {
     if (data.charAt(0) == 'm'){
         // println(data.substring(1));
         String[] dataList = split(data.substring(1), " ");
-        stepY = float(dataList[0]);
-        menuSelection = int(map(stepY, -180, 180, 0, 2));
-        optionSelection = int(map(stepY, -180, 180, 0, 4));
-        stepY = map(stepY, -180, 180, -8, 8);
-        stepX = float(dataList[1]);
-        stepX = map(stepX, -180, 180, -8, 8);
-        smoothMovement(stepX, stepY);
+        newYstep = float(dataList[0]);
+        menuSelection = int(map(newYstep, -180, 180, 0, 2));
+        optionSelection = int(map(newYstep, -180, 180, 0, 4));
+        newYstep = map(newYstep, -180, 180, -8, 8);
+        newXstep = float(dataList[1]);
+        newXstep = map(newXstep, -180, 180, -8, 8);
+        smoothMovement(newXstep, newYstep);
     }
 
     //shoot lazzzzerrrr
@@ -542,8 +554,7 @@ void smoothMovement(float stepX, float stepY){
     }
     smoothedY = smoothedY / 5;
 
-    //update movement
-    xPos += smoothedX;
-    yPos += smoothedY;
+    this.newXstep = smoothedX;
+    this.newYstep = smoothedY;
 
 }

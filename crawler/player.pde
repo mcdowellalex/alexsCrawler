@@ -1,6 +1,5 @@
 public class Player {
 
-
     float mySize = 10;
     color myColor;
     float myX = 250;
@@ -13,12 +12,15 @@ public class Player {
         myColor = playerColor;
     }
 
-    void move(float xPos, float yPos){
+    void move(float xStep, float yStep){
         fill(myColor);
         noStroke();
-        square(xPos, yPos, mySize);
-        myX = xPos;
-        myY = yPos;
+        myX += xStep;
+        myY += yStep;
+        square(myX, myY, mySize);
+        // square(xPos, yPos, mySize);
+        // myX = xPos;
+        // myY = yPos;
     }
 
     //myX and myY 
