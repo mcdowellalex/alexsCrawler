@@ -1,13 +1,13 @@
-public class Ammo {
+public class Ammo extends Movable{
 
-    float mySize = 5;
     color myColor = color(255,0,0);
-    float myX=-20; //default off screen
-    float myY=0;
 
     boolean isActive = false;
 
     Ammo(){
+        myX = -20;
+        myY = 0;
+        mySize = 5;
     }
 
     void fire(){
@@ -23,18 +23,7 @@ public class Ammo {
             
         }
     }
-
-
-    //myX and myY are the top left corner of the square
-    float getX(){
-        return myX;
-    }
-    float getY(){
-        return myY;
-    }
-    float getSize(){
-        return mySize;
-    }
+    
     void setX(float x){
         myX = x;
     }

@@ -1,12 +1,9 @@
-public class Coin{
-
-    float myX;
-    float myY;
-    float mySize = 25;
+public class Coin extends Movable{
 
     Coin(float x, float y){
         myX = x;
         myY = y;
+        mySize = 25;
     }
 
     void drop(){
@@ -21,16 +18,6 @@ public class Coin{
         circle(myX, myY, mySize-10);
     }
 
-    //myX and myY 
-    float getX(){
-        return myX;
-    }
-    float getY(){
-        return myY;
-    }
-    float getSize(){
-        return mySize;
-    }
     void setY(float newY){
         myY = newY;
     }

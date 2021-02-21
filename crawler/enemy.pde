@@ -1,16 +1,13 @@
-public class Enemy {
+public class Enemy extends Movable{
 
-    float mySize = 20;
     color myColor;
-    float myX;
-    float myY;
     float mySpeed;
 
     Enemy(float x, float y, float speed){
         myX = x;
         myY = y;
         mySpeed = speed;
-
+        mySize = 20;
         float r = random(255);
         float g = random(255);
         float b = random(255);
@@ -25,18 +22,6 @@ public class Enemy {
         fill(myColor);
         stroke(200,100,0); //incase the color matches the background
         square(myX, myY, 20);
-    }
-
-
-    //myX and myY are the top left corner of the square
-    float getX(){
-        return myX;
-    }
-    float getY(){
-        return myY;
-    }
-    float getSize(){
-        return mySize;
     }
 
     //setters
