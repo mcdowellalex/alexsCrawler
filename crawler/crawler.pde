@@ -235,7 +235,7 @@ void killPlayer(){
         coin.setX(random(width - 20));
     }
     //reset ammo
-    ammo = 1;
+    ammo = 3;
     //reset player pos
     player.myX = 250;
     player.myY = 400;    
@@ -416,6 +416,28 @@ void checkCollisions(){
 
         }
     }
+
+    //check for collisions with border
+    boolean hitWall = false;
+    if (player.getX() <= 0){ //hit left border
+        hitWall = true;
+    }else if ((player.getX() + player.getSize()) >= width) {//hit right border
+        hitWall = true;
+    }
+    if (player.getY() <= 0){//hit top border
+        hitWall = true;
+    } else if (player.getY() + player.getSize() >= height){
+        hitWall = true;
+    }
+    if (hitWall){
+        //damage the player and check if they're dead
+        player.damage();
+        makeSound();
+        if (player.lives <= 0){
+            killPlayer();
+        }
+    }
+    
     
 }
 
